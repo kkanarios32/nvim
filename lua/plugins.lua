@@ -88,11 +88,22 @@ require('packer').startup({function(use)
     end,
   })
   use({
+    "EdenEast/nightfox.nvim",
+    event = "VimEnter",
+    config = function()
+      vim.cmd("colorscheme nordfox")
+    end
+  })
+  use({
     "nvim-telescope/telescope.nvim",
     opt = true,
-    config = function()
-      require("config.telescope")
-    end,
+    requires = { 
+      "fhill2/telescope-ultisnips.nvim", 
+      wants = "ultisnips",
+      config = function()
+        require("config.telescope")
+      end,
+    },
     cmd = { "Telescope" },
     module = "telescope",
     keys = { "<leader><space>", "<leader>fz", "<leader>pp" },
@@ -111,10 +122,6 @@ require('packer').startup({function(use)
     event = "BufReadPre",
   })
   use({
-    'dylanaraps/wal',
-    ft = {'tex', 'plaintex', 'bibtex'},
-  })
-  use({
     "hoob3rt/lualine.nvim",
     event = "VimEnter",
     wants = "nvim-web-devicons",
@@ -126,7 +133,7 @@ require('packer').startup({function(use)
     {
       "tpope/vim-sleuth",
       event = "BufEnter",
-      config = vim.cmd([[au BufEnter,BufWritePost * Sleuth]])
+      config = vim.cmd([[au BufWritePost * Sleuth]])
     },
     {
       "tpope/vim-commentary",

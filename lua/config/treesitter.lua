@@ -2,10 +2,11 @@ require('nvim-treesitter.configs').setup {
     ensure_installed = {
         "cpp",
         "lua",
+        "latex"
     },
     highlight = {
         enable = true,
-        disable = {"as"}
+        disable = {"latex"}
     },
     textobjects = {
         select = {
