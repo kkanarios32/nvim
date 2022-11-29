@@ -17,6 +17,22 @@ vim.cmd [[packadd packer.nvim]]
 
 require('packer').startup({function(use)
   use({
+    'lervag/vimtex',
+    ft = {'tex', 'plaintex', 'bibtex'},
+  })
+  use({
+    'SirVer/ultisnips',
+    module = "ultisnips",
+    requires = {{'honza/vim-snippets', rtp = '.'}},
+    config = function()      
+      vim.g.UltiSnipsExpandTrigger = '<Plug>(ultisnips_expand)'      
+      vim.g.UltiSnipsJumpForwardTrigger = '<Plug>(ultisnips_jump_forward)'
+      vim.g.UltiSnipsJumpBackwardTrigger = '<Plug>(ultisnips_jump_backward)'
+      vim.g.UltiSnipsListSnippets = '<c-x><c-s>'
+      vim.g.UltiSnipsRemoveSelectModeMappings = 0
+    end
+  })
+  use({
     "wbthomason/packer.nvim",
     opt = true,
   })
@@ -39,10 +55,6 @@ require('packer').startup({function(use)
   use({
     "onsails/lspkind-nvim",
     module = "lspkind-nvim",
-  })
-  use({
-    "rafamadriz/friendly-snippets", 
-    module = "friendly-snippets",
   })
   use({
     "kyazdani42/nvim-web-devicons",
@@ -99,11 +111,8 @@ require('packer').startup({function(use)
     event = "BufReadPre",
   })
   use({
-    "edeneast/nightfox.nvim",
-    event = "VimEnter",
-    config = function() 
-      require("config.nightfox")
-    end,
+    'dylanaraps/wal',
+    ft = {'tex', 'plaintex', 'bibtex'},
   })
   use({
     "hoob3rt/lualine.nvim",
@@ -133,22 +142,14 @@ require('packer').startup({function(use)
     },
   })
   use({
-    "L3MON4D3/LuaSnip", 
-    module = "LuaSnip",
-    wants = "friendly-snippets",
-    config = function()
-      require("config.luasnip")
-    end   
-  })
-  use({
     "hrsh7th/nvim-cmp",
     event = "InsertEnter",
     wants = { 
-      "LuaSnip",
+      "ultisnips",
       "lspkind-nvim" 
     },
     requires = {
-      { "saadparwaiz1/cmp_luasnip", after = "nvim-cmp", },
+      { "quangnguyen30192/cmp-nvim-ultisnips", after = "nvim-cmp", },
       { "kdheepak/cmp-latex-symbols", after = "nvim-cmp", },
     },
     config = function()
@@ -156,8 +157,14 @@ require('packer').startup({function(use)
     end
   })
   use({
-    "Badhi/nvim-treesitter-cpp-tools",
-    ft = {"c", "cpp"}
+    "aserowy/tmux.nvim",
+    event = "BufEnter",
+    config = function()
+      require("config.tmux")
+    end
+  })
+  use({
+    "github/copilot.vim",
   })
 end,
 config = {

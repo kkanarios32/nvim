@@ -2,7 +2,6 @@ require('nvim-treesitter.configs').setup {
     ensure_installed = {
         "cpp",
         "lua",
-        "latex",
     },
     highlight = {
         enable = true,

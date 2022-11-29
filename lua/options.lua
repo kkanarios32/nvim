@@ -3,7 +3,7 @@ vim.g.mapleader = " " -- set leader to space
 
 -- utilities
 vim.opt.clipboard = "unnamedplus" -- sync with system clipboard
-vim.opt.cursorline = true -- Enable highlighting of the current line
+-- vim.opt.cursorline = true -- Enable highlighting of the current line
 vim.opt.relativenumber = true -- Relative line numbers
 vim.opt.smartcase = true -- Don't ignore case with capitals
 vim.opt.smartindent = true -- Insert indents automatically
