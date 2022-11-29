@@ -35,14 +35,14 @@ cmp.setup{
           if cmp.visible() then
               cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
           elseif vim.fn["UltiSnips#CanJumpForwards"]() == 1 then
-              vim.api.nvim_feedkeys(t("<Plug>(ultisnips_jump_forward)"), 'm', true)
+            vim.fn.feedkeys(vim.api.nvim_replace_termcodes("<Plug>(ultisnips_jump_forward)", true, true, true), "")
           else
               fallback()
           end
       end,
       s = function(fallback)
           if vim.fn["UltiSnips#CanJumpForwards"]() == 1 then
-              vim.api.nvim_feedkeys(t("<Plug>(ultisnips_jump_forward)"), 'm', true)
+            vim.fn.feedkeys(vim.api.nvim_replace_termcodes("<Plug>(ultisnips_jump_forward)", true, true, true), "")
           else
               fallback()
           end
@@ -60,14 +60,14 @@ cmp.setup{
           if cmp.visible() then
               cmp.select_prev_item({ behavior = cmp.SelectBehavior.Insert })
           elseif vim.fn["UltiSnips#CanJumpBackwards"]() == 1 then
-              return vim.api.nvim_feedkeys( t("<Plug>(ultisnips_jump_backward)"), 'm', true)
+              return vim.fn.feedkeys(vim.api.nvim_replace_termcodes("<Plug>(ultisnips_jump_backward)", true, true, true), "")
           else
               fallback()
           end
       end,
       s = function(fallback)
           if vim.fn["UltiSnips#CanJumpBackwards"]() == 1 then
-              return vim.api.nvim_feedkeys( t("<Plug>(ultisnips_jump_backward)"), 'm', true)
+              return vim.fn.feedkeys(vim.api.nvim_replace_termcodes("<Plug>(ultisnips_jump_backward)", true, true, true), "")
           else
               fallback()
           end
@@ -80,7 +80,7 @@ cmp.setup{
           if cmp.visible() then
               cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
           else
-              vim.api.nvim_feedkeys(t('<Down>'), 'n', true)
+              vim.fn.feedkeys(vim.api.nvim_replace_termcodes("<Down>", true, true, true), 'n')
           end
       end,
       i = function(fallback)
@@ -96,7 +96,7 @@ cmp.setup{
           if cmp.visible() then
               cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
           else
-              vim.api.nvim_feedkeys(t('<Up>'), 'n', true)
+              vim.fn.feedkeys(vim.api.nvim_replace_termcodes("<Up>", true, true, true), 'n')
           end
       end,
       i = function(fallback)
