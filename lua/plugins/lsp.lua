@@ -42,21 +42,25 @@ return {
 		end,
 	},
 	{
-		"saghen/blink.compat",
-		-- use the latest release, via version = '*', if you also use the latest release for blink.cmp
-		version = "*",
-		-- lazy.nvim will automatically load the plugin when it's required by blink.cmp
-		lazy = true,
-		-- make sure to set opts so that lazy.nvim calls blink.compat's setup
-		opts = {},
-		config = function()
-			local blink = require("blink.compat.registry")
-			local forester_completion = require("forester.completion")
-			blink.register_source("forester", forester_completion)
-		end,
-	},
-	{
 		"saghen/blink.cmp",
+		dependencies = {
+			{
+				"saghen/blink.compat",
+				-- use the latest release, via version = '*', if you also use the latest release for blink.cmp
+				version = "*",
+				-- lazy.nvim will automatically load the plugin when it's required by blink.cmp
+				lazy = true,
+				-- make sure to set opts so that lazy.nvim calls blink.compat's setup
+				opts = {},
+				config = function()
+					local blink = require("blink.compat.registry")
+					local forester_completion = require("forester.completion")
+					blink.register_source("forester", forester_completion)
+				end,
+			},
+			{ "L3MON4D3/LuaSnip", version = "v2.*" },
+			"rafamadriz/friendly-snippets",
+		},
 		-- use a release tag to download pre-built binaries
 		version = "*",
 		-- AND/OR build from source, requires nightly: https://rust-lang.github.io/rustup/concepts/channels.html#working-with-nightly-rust
@@ -91,10 +95,14 @@ return {
 
 			-- Default list of enabled providers defined so that you can extend it
 			-- elsewhere in your config, without redefining it, due to `opts_extend`
+			snippets = { preset = "luasnip" },
 			sources = {
 				default = { "lsp", "path", "snippets", "buffer", "forester" },
 				providers = {
 					forester = {
+						enabled = function()
+							return vim.tbl_contains({ "forester" }, vim.bo.filetype)
+						end,
 						name = "forester",
 						module = "blink.compat.source",
 					},
@@ -106,7 +114,7 @@ return {
 			-- when the Rust fuzzy matcher is not available, by using `implementation = "prefer_rust"`
 			--
 			-- See the fuzzy documentation for more information
-			fuzzy = { implementation = "prefer_rust_with_warning" },
+			fuzzy = { implementation = "rust" },
 		},
 		opts_extend = { "sources.default" },
 	},
@@ -125,25 +133,31 @@ return {
 			-- options for vim.diagnostic.config()
 			---@type vim.diagnostic.Opts
 			diagnostics = {
-				underline = true,
 				update_in_insert = false,
-				virtual_text = {
-					spacing = 4,
-					source = "if_many",
-					prefix = "●",
-					-- this will set set the prefix to a function that returns the diagnostics icon based on the severity
-					-- this only works on a recent 0.10.0 build. Will be set to "●" when not supported
-					-- prefix = "icons",
-				},
 				severity_sort = true,
-				-- signs = {
-				--   text = {
-				--     [vim.diagnostic.severity.ERROR] = LazyVim.config.icons.diagnostics.Error,
-				--     [vim.diagnostic.severity.WARN] = LazyVim.config.icons.diagnostics.Warn,
-				--     [vim.diagnostic.severity.HINT] = LazyVim.config.icons.diagnostics.Hint,
-				--     [vim.diagnostic.severity.INFO] = LazyVim.config.icons.diagnostics.Info,
-				--   },
-				-- },
+				float = { border = "rounded", source = "if_many" },
+				underline = { severity = vim.diagnostic.severity.ERROR },
+				signs = vim.g.have_nerd_font and {
+					text = {
+						[vim.diagnostic.severity.ERROR] = "󰅚 ",
+						[vim.diagnostic.severity.WARN] = "󰀪 ",
+						[vim.diagnostic.severity.INFO] = "󰋽 ",
+						[vim.diagnostic.severity.HINT] = "󰌶 ",
+					},
+				} or {},
+				virtual_text = {
+					source = "if_many",
+					spacing = 2,
+					format = function(diagnostic)
+						local diagnostic_message = {
+							[vim.diagnostic.severity.ERROR] = diagnostic.message,
+							[vim.diagnostic.severity.WARN] = diagnostic.message,
+							[vim.diagnostic.severity.INFO] = diagnostic.message,
+							[vim.diagnostic.severity.HINT] = diagnostic.message,
+						}
+						return diagnostic_message[diagnostic.severity]
+					end,
+				},
 			},
 			-- Enable this to enable the builtin LSP inlay hints on Neovim >= 0.10.0
 			-- Be aware that you also will need to properly configure your LSP server to
@@ -261,25 +275,6 @@ return {
 						client.server_capabilities.hoverProvider = false
 					end,
 				},
-				-- pylsp = {
-				--   plugins = {
-				--     rope_completion = {
-				--       enabled = true,
-				--     },
-				--     black = {
-				--       enabled = true,
-				--     },
-				--     mypy = {
-				--       enabled = true,
-				--       live_mode = true,
-				--       strict = true,
-				--     },
-				--     isort = {
-				--       enabled = true,
-				--       profile = "black",
-				--     },
-				--   },
-				-- },
 			},
 		},
 		config = function(_, opts)
@@ -344,42 +339,5 @@ return {
 				lspconfig[server].setup(config)
 			end
 		end,
-	},
-	{
-		"folke/trouble.nvim",
-		opts = {}, -- for default options, refer to the configuration section for custom setup.
-		cmd = "Trouble",
-		keys = {
-			{
-				"<leader>xx",
-				"<cmd>Trouble diagnostics toggle<cr>",
-				desc = "Diagnostics (Trouble)",
-			},
-			{
-				"<leader>xX",
-				"<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
-				desc = "Buffer Diagnostics (Trouble)",
-			},
-			{
-				"<leader>cs",
-				"<cmd>Trouble symbols toggle focus=false<cr>",
-				desc = "Symbols (Trouble)",
-			},
-			{
-				"<leader>cl",
-				"<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
-				desc = "LSP Definitions / references / ... (Trouble)",
-			},
-			{
-				"<leader>xL",
-				"<cmd>Trouble loclist toggle<cr>",
-				desc = "Location List (Trouble)",
-			},
-			{
-				"<leader>xQ",
-				"<cmd>Trouble qflist toggle<cr>",
-				desc = "Quickfix List (Trouble)",
-			},
-		},
 	},
 }
