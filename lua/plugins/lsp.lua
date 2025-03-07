@@ -58,8 +58,25 @@ return {
 					blink.register_source("forester", forester_completion)
 				end,
 			},
-			{ "L3MON4D3/LuaSnip", version = "v2.*" },
-			"rafamadriz/friendly-snippets",
+			{
+				"iurimateus/luasnip-latex-snippets.nvim",
+				-- vimtex isn't required if using treesitter
+				dependencies = {
+					{
+						"L3MON4D3/LuaSnip",
+						version = "v2.*",
+					},
+					"lervag/vimtex",
+				},
+				config = function()
+					require("luasnip-latex-snippets").setup()
+					-- or setup({ use_treesitter = true })
+					require("luasnip").config.setup({
+						enable_autosnippets = true,
+					})
+					require("luasnip.loaders.from_lua").load({ paths = "~/.config/nvim/lua/snippets" })
+				end,
+			},
 		},
 		-- use a release tag to download pre-built binaries
 		version = "*",
@@ -97,7 +114,7 @@ return {
 			-- elsewhere in your config, without redefining it, due to `opts_extend`
 			snippets = { preset = "luasnip" },
 			sources = {
-				default = { "lsp", "path", "snippets", "buffer", "forester" },
+				default = { "lsp", "path", "snippets", "forester" },
 				providers = {
 					forester = {
 						enabled = function()
@@ -272,7 +289,7 @@ return {
 						},
 					},
 					on_attach = function(client, _)
-						client.server_capabilities.hoverProvider = false
+						client.server_capabilities.hoverProvider = true
 					end,
 				},
 			},
