@@ -41,7 +41,7 @@ return {
 				if prefix ~= "" then
 					cmd = cmd .. " " .. prefix
 				else
-					cmd = cmd .. " uts"
+					cmd = cmd .. " kak"
 				end
 				local file = io.popen(cmd):read("*a")
 				vim.cmd("e " .. file)

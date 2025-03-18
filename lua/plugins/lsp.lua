@@ -59,18 +59,28 @@ return {
 				end,
 			},
 			{
-				"iurimateus/luasnip-latex-snippets.nvim",
+				"custom-luasnip-snippets.nvim",
 				-- vimtex isn't required if using treesitter
+				dir = "~/.config/nvim/lua/local/custom-luasnip-snippets.nvim/",
+				dev = true,
 				dependencies = {
 					{
 						"L3MON4D3/LuaSnip",
 						version = "v2.*",
 					},
+					{
+						"anki.nvim",
+						dir = "~/.config/nvim/lua/local/anki.nvim/",
+						dev = true,
+						opts = {
+							flashcard_dir = "/home/kellen/Projects/forest/flashcards/",
+							filetypes = { "tex", "anki", "forester" },
+						},
+					},
 					"lervag/vimtex",
 				},
 				config = function()
-					require("luasnip-latex-snippets").setup()
-					-- or setup({ use_treesitter = true })
+					require("custom-luasnip-snippets").setup()
 					require("luasnip").config.setup({
 						enable_autosnippets = true,
 					})
