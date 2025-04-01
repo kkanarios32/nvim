@@ -31,13 +31,13 @@ return {
 			"williamboman/mason.nvim",
 			config = function()
 				require("mason").setup({
-					ensure_installed = { "black", "isort" },
+					ensure_installed = { "isort" },
 				})
 			end,
 		},
 		config = function()
 			require("mason-lspconfig").setup({
-				ensure_installed = { "lua_ls", "pyright", "pylsp" },
+				ensure_installed = { "lua_ls", "pyright", "ruff" },
 			})
 		end,
 	},
@@ -80,7 +80,9 @@ return {
 					"lervag/vimtex",
 				},
 				config = function()
-					require("custom-luasnip-snippets").setup()
+					require("custom-luasnip-snippets").setup({
+						use_treesitter = true,
+					})
 					require("luasnip").config.setup({
 						enable_autosnippets = true,
 					})
@@ -123,6 +125,9 @@ return {
 			-- Default list of enabled providers defined so that you can extend it
 			-- elsewhere in your config, without redefining it, due to `opts_extend`
 			snippets = { preset = "luasnip" },
+			-- sources = {
+			-- 	default = { "lsp", "path", "snippets", "buffer" },
+			-- },
 			sources = {
 				default = { "lsp", "path", "snippets", "forester" },
 				providers = {
@@ -292,8 +297,17 @@ return {
 						},
 					},
 				},
+				ruff = {
+					on_attach = function(client)
+						client.server_capabilities.hoverProvider = false
+					end,
+				},
 				pyright = {
+					analysis = {
+						ignore = { "*" },
+					},
 					settings = {
+						disableOrganizeImports = true,
 						python = {
 							pythonPath = get_python_path(vim.fs.root(0, ".git")),
 						},
