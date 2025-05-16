@@ -6,25 +6,33 @@ local latex_args = {
 	"%p",
 }
 
-local function get_python_path(workspace)
-	-- Use activated virtualenv.
-	if vim.env.VIRTUAL_ENV then
-		return vim.fs.joinpath(vim.env.VIRTUAL_ENV, "bin", "python")
-	end
-
-	-- Find and use virtualenv in workspace directory.
-	for _, pattern in ipairs({ "*", ".*" }) do
-		local match = vim.fn.glob(vim.fs.joinpath(workspace, pattern, "pyvenv.cfg"))
-		if match ~= "" then
-			return vim.fs.joinpath(vim.fs.dirname(match), "bin", "python")
-		end
-	end
-
-	-- Fallback to system Python.
-	return vim.fn.exepath("python3") or vim.fn.exepath("python") or "python"
-end
+-- local function get_python_path(workspace)
+-- 	-- Use activated virtualenv.
+-- 	if vim.env.VIRTUAL_ENV then
+-- 		return vim.fs.joinpath(vim.env.VIRTUAL_ENV, "bin", "python")
+-- 	end
+--
+-- 	-- Find and use virtualenv in workspace directory.
+-- 	for _, pattern in ipairs({ "*", ".*" }) do
+-- 		local match = vim.fn.glob(vim.fs.joinpath(workspace, pattern, "pyvenv.cfg"))
+-- 		if match ~= "" then
+-- 			return vim.fs.joinpath(vim.fs.dirname(match), "bin", "python")
+-- 		end
+-- 	end
+--
+-- 	-- Fallback to system Python.
+-- 	return vim.fn.exepath("python3") or vim.fn.exepath("python") or "python"
+-- end
 
 return {
+	{
+		'f3fora/nvim-texlabconfig',
+		config = function()
+			require('texlabconfig').setup()
+		end,
+		ft = { 'tex', 'bib' }, -- Lazy-load on filetype
+		build = 'go build -o ~/.bin/'
+	},
 	{
 		"williamboman/mason-lspconfig.nvim",
 		dependencies = {
@@ -37,7 +45,7 @@ return {
 		},
 		config = function()
 			require("mason-lspconfig").setup({
-				ensure_installed = { "lua_ls", "pyright", "ruff" },
+				ensure_installed = { "lua_ls", "basedpyright", "ruff" },
 			})
 		end,
 	},
@@ -158,6 +166,7 @@ return {
 	-- This can vary by config, but in-general for nvim-lspconfig:
 	{
 		"neovim/nvim-lspconfig",
+		lazy = false,
 		dependencies = {
 			"saghen/blink.cmp",
 		},
@@ -274,7 +283,7 @@ return {
 							auxDirectory = ".",
 							bibtexFormatter = "texlab",
 							build = {
-								args = { "-pdf", "-interaction=nonstopmode", "-synctex=1", "%f" },
+								args = { "-lualatex", "-pdf", "-g", "-interaction=nonstopmode", "-synctex=1", "%f" },
 								executable = "latexmk",
 								forwardSearchAfter = true,
 								onSave = true,
@@ -302,15 +311,15 @@ return {
 						client.server_capabilities.hoverProvider = false
 					end,
 				},
-				pyright = {
+				basedpyright = {
 					analysis = {
 						ignore = { "*" },
 					},
 					settings = {
 						disableOrganizeImports = true,
-						python = {
-							pythonPath = get_python_path(vim.fs.root(0, ".git")),
-						},
+						-- python = {
+						-- 	pythonPath = get_python_path(vim.fs.root(0, ".git")),
+						-- },
 					},
 					on_attach = function(client, _)
 						client.server_capabilities.hoverProvider = true
