@@ -1,9 +1,9 @@
 local latex_args = {
-	"--synctex-editor-command",
-	[[nvim-texlabconfig -file '%{input}' -line %{line}]],
-	"--synctex-forward",
-	"%l:1:%f",
-	"%p",
+	'--synctex-editor-command',
+	[[nvim-texlabconfig -file '%%%{input}' -line %%%{line} -server ]] .. vim.v.servername,
+	'--synctex-forward',
+	'%l:1:%f',
+	'%p',
 }
 
 -- local function get_python_path(workspace)
@@ -31,7 +31,7 @@ return {
 			require('texlabconfig').setup()
 		end,
 		ft = { 'tex', 'bib' }, -- Lazy-load on filetype
-		build = 'go build -o ~/.bin/'
+		build = 'go build -o ~/.local/bin/'
 	},
 	{
 		"williamboman/mason-lspconfig.nvim",
@@ -39,13 +39,13 @@ return {
 			"williamboman/mason.nvim",
 			config = function()
 				require("mason").setup({
-					ensure_installed = { "isort" },
+					ensure_installed = { "isort", "basedpyright" },
 				})
 			end,
 		},
 		config = function()
 			require("mason-lspconfig").setup({
-				ensure_installed = { "lua_ls", "basedpyright", "ruff" },
+				ensure_installed = { "lua_ls", "ruff" },
 			})
 		end,
 	},
@@ -312,14 +312,15 @@ return {
 					end,
 				},
 				basedpyright = {
-					analysis = {
-						ignore = { "*" },
-					},
 					settings = {
-						disableOrganizeImports = true,
-						-- python = {
-						-- 	pythonPath = get_python_path(vim.fs.root(0, ".git")),
-						-- },
+						basedpyright = {
+							disableOrganizeImports = true,
+							typeCheckingMode = "basic",
+							analysis = {
+								-- ignore = { "*" },
+								-- typeCheckingMode = "off",
+							},
+						}
 					},
 					on_attach = function(client, _)
 						client.server_capabilities.hoverProvider = true
