@@ -25,14 +25,32 @@ return { -- Highlight, edit, and navigate code
 			-- Autoinstall languages that are not installed
 			auto_install = true,
 			highlight = {
-				-- enable = true,
 				disable = { "latex" },
-				-- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
-				--  If you are experiencing weird indenting issues, add the language to
-				--  the list of additional_vim_regex_highlighting and disabled languages for indent.
 			},
 			indent = { enable = true },
 		},
+		config = function()
+			vim.filetype.add({ extension = { tree = "forester" } })
+
+			local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
+			parser_config.forester = {
+				install_info = {
+					url = "https://github.com/kentookura/tree-sitter-forester",
+					files = { "src/parser.c" },
+					branch = "main",
+					generate_requires_npm = false,
+					requires_generate_from_grammar = false,
+				},
+				filetype = "forester",
+			}
+
+			require("nvim-treesitter.configs").setup({
+				ensure_installed = { "forester" },
+				highlight = {
+					enable = true
+				}
+			})
+		end
 		-- There are additional nvim-treesitter modules that you can use to interact
 		-- with nvim-treesitter. You should go explore a few and see what interests you:
 		--
