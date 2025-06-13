@@ -4,15 +4,6 @@ local M = setmetatable({}, {
 	end,
 })
 
----@class LazyRoot
----@field paths string[]
----@field spec LazyRootSpec
-
----@alias LazyRootFn fun(buf: number): (string|string[])
-
----@alias LazyRootSpec string|string[]|LazyRootFn
-
----@type LazyRootSpec[]
 M.spec = { "lsp", { ".git", "lua" }, "cwd" }
 
 M.detectors = {}
@@ -21,13 +12,28 @@ function M.detectors.cwd()
 	return { vim.uv.cwd() }
 end
 
+function M.get_clients(opts)
+	opts = opts or {}
+	local bufnr = opts.bufnr or 0
+	local clients = vim.lsp.get_clients({ bufnr = bufnr })
+	return clients
+end
+
+function M.norm(path)
+	return path and vim.fn.fnamemodify(path, ":p"):gsub("/$", "")
+end
+
+function M.is_win()
+	return vim.loop.os_uname().version:match("Windows")
+end
+
 function M.detectors.lsp(buf)
 	local bufpath = M.bufpath(buf)
 	if not bufpath then
 		return {}
 	end
 	local roots = {} ---@type string[]
-	local clients = vim.lsp.get_clients({ bufnr = buf })
+	local clients = M.get_clients({ bufnr = buf })
 	clients = vim.tbl_filter(function(client)
 		return not vim.tbl_contains(vim.g.root_lsp_ignore or {}, client.name)
 	end, clients)
@@ -41,11 +47,11 @@ function M.detectors.lsp(buf)
 		end
 	end
 	return vim.tbl_filter(function(path)
+		path = M.norm(path)
 		return path and bufpath:find(path, 1, true) == 1
 	end, roots)
 end
 
----@param patterns string[]|string
 function M.detectors.pattern(buf, patterns)
 	patterns = type(patterns) == "string" and { patterns } or patterns
 	local path = M.bufpath(buf) or vim.uv.cwd()
@@ -76,11 +82,9 @@ function M.realpath(path)
 		return nil
 	end
 	path = vim.uv.fs_realpath(path) or path
-	return path
+	return M.norm(path)
 end
 
----@param spec LazyRootSpec
----@return LazyRootFn
 function M.resolve(spec)
 	if M.detectors[spec] then
 		return M.detectors[spec]
@@ -92,7 +96,6 @@ function M.resolve(spec)
 	end
 end
 
----@param opts? { buf?: number, spec?: LazyRootSpec[], all?: boolean }
 function M.detect(opts)
 	opts = opts or {}
 	opts.spec = opts.spec or type(vim.g.root_spec) == "table" and vim.g.root_spec or M.spec
@@ -125,7 +128,6 @@ end
 
 function M.info()
 	local spec = type(vim.g.root_spec) == "table" and vim.g.root_spec or M.spec
-
 	local roots = M.detect({ all = true })
 	local lines = {} ---@type string[]
 	local first = true
@@ -142,6 +144,7 @@ function M.info()
 	lines[#lines + 1] = "```lua"
 	lines[#lines + 1] = "vim.g.root_spec = " .. vim.inspect(spec)
 	lines[#lines + 1] = "```"
+	vim.notify(table.concat(lines, "\n"), vim.log.levels.INFO, { title = "Root Detection" })
 	return roots[1] and roots[1].paths[1] or vim.uv.cwd()
 end
 
@@ -149,24 +152,18 @@ end
 M.cache = {}
 
 function M.setup()
-	-- FIX: doesn't properly clear cache in neo-tree `set_root` (which should happen presumably on `DirChanged`),
-	-- probably because the event is triggered in the neo-tree buffer, therefore add `BufEnter`
-	-- Maybe this is too frequent on `BufEnter` and something else should be done instead??
+	vim.api.nvim_create_user_command("RootInfo", function()
+		M.info()
+	end, { desc = "Root directories for the current buffer" })
+
 	vim.api.nvim_create_autocmd({ "LspAttach", "BufWritePost", "DirChanged", "BufEnter" }, {
-		group = vim.api.nvim_create_augroup("lazyvim_root_cache", { clear = true }),
+		group = vim.api.nvim_create_augroup("root_cache", { clear = true }),
 		callback = function(event)
 			M.cache[event.buf] = nil
 		end,
 	})
 end
 
--- returns the root directory based on:
--- * lsp workspace folders
--- * lsp root_dir
--- * root pattern of filename of the current buffer
--- * root pattern of cwd
----@param opts? {normalize?:boolean, buf?:number}
----@return string
 function M.get(opts)
 	opts = opts or {}
 	local buf = opts.buf or vim.api.nvim_get_current_buf()
@@ -179,7 +176,7 @@ function M.get(opts)
 	if opts and opts.normalize then
 		return ret
 	end
-	return (vim.uv.os_uname().sysname:find("Windows") ~= nil) and ret:gsub("/", "\\") or ret
+	return M.is_win() and ret:gsub("/", "\\") or ret
 end
 
 function M.git()
@@ -189,7 +186,6 @@ function M.git()
 	return ret
 end
 
----@param opts? {hl_last?: string}
 function M.pretty_path(opts)
 	return ""
 end

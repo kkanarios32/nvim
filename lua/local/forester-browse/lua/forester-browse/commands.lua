@@ -1,20 +1,20 @@
 local Forester = require("forester-browse.bindings")
 local config = require("forester-browse.config")
-local pickers = require("forester-browse.pickers")
+local pickers = require("forester-browse.fzf")
 local M = {}
 
 M.commands = {
   -- Select the forester configuration file to use
-  config = function()
-    local configs = config.all_configs()
-    if #configs == 0 then
-      vim.notify("No forester configs available in the current directory!", vim.log.levels.WARN)
-    else
-      pickers.pick_config(configs)
-      vim.api.nvim_exec_autocmds("User", { pattern = "SwitchedForesterConfig" })
-    end
-    -- config.switch()
-  end,
+  -- config = function()
+  --   local configs = config.all_configs()
+  --   if #configs == 0 then
+  --     vim.notify("No forester configs available in the current directory!", vim.log.levels.WARN)
+  --   else
+  --     pickers.pick_config(configs)
+  --     vim.api.nvim_exec_autocmds("User", { pattern = "SwitchedForesterConfig" })
+  --   end
+  --   -- config.switch()
+  -- end,
 
   browse = function()
     local trees = Forester.query_all(vim.g.forester_current_config.path)
