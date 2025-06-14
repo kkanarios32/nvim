@@ -69,6 +69,4 @@ M.pick_by_title = function(opts)
   end, opts)
 end
 
-M.pick_by_title()
-
 return M
