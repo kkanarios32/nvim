@@ -80,7 +80,7 @@ return {
 			},
 			snippets = { preset = "luasnip" },
 			sources = {
-				default = { "lsp", "path", "snippets" },
+				default = { "lsp", "path", "snippets", "omni" },
 			},
 
 			fuzzy = { implementation = "rust" },

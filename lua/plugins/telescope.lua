@@ -16,7 +16,12 @@ return {
 		)
 		vim.keymap.set("n", "<leader>/",
 			function()
-				builtins.grep({ cwd = root() })
+				builtins.live_grep({ cwd = root() })
+			end
+		)
+		vim.keymap.set("n", "<leader>fc",
+			function()
+				builtins.files({ cwd = "/home/kellen/dotfiles/" })
 			end
 		)
 	end

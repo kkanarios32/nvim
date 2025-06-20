@@ -170,8 +170,8 @@ return {
       auxDirectory = ".",
       bibtexFormatter = "texlab",
       build = {
-        args = { "-lualatex", "-pdf", "-g", "-interaction=nonstopmode", "-synctex=1", "%f" },
         executable = "latexmk",
+        args = { "-pdf", "-lualatex", "-g", "-interaction=nonstopmode", "-synctex=1", "%f" },
         forwardSearchAfter = true,
         onSave = true,
       },

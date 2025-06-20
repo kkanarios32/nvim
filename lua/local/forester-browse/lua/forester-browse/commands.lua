@@ -28,7 +28,7 @@ M.commands = {
         vim.print("No trees found!")
       end
     end
-    pickers.pick_by_title({})
+    local tree = pickers.pick_by_title()
   end,
 }
 
