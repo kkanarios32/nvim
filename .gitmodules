@@ -1,9 +1,6 @@
 [submodule "lua/local/anki.nvim"]
 	path = lua/local/anki.nvim
 	url = git@github.com:kkanarios32/anki.nvim.git
-[submodule "lua/local/forester.nvim"]
-	path = lua/local/forester.nvim
-	url = git@github.com:kkanarios32/forester.nvim.git
 [submodule "lua/local/custom-luasnip-snippets.nvim"]
 	path = lua/local/custom-luasnip-snippets.nvim
 	url = git@github.com:kkanarios32/luasnip-latex-snippets.nvim.git

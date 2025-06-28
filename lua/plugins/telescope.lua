@@ -21,7 +21,7 @@ return {
 		)
 		vim.keymap.set("n", "<leader>fc",
 			function()
-				builtins.files({ cwd = "/home/kellen/dotfiles/" })
+				builtins.files({ cwd = "$DOTFILES" })
 			end
 		)
 	end

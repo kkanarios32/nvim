@@ -171,7 +171,7 @@ return {
       bibtexFormatter = "texlab",
       build = {
         executable = "latexmk",
-        args = { "-pdf", "-lualatex", "-g", "-interaction=nonstopmode", "-synctex=1", "%f" },
+        args = { "-pdf", "--shell-escape", "-lualatex", "-g", "-interaction=nonstopmode", "-synctex=1", "%f" },
         forwardSearchAfter = true,
         onSave = true,
       },
