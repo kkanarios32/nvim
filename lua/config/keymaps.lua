@@ -19,11 +19,3 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.api.nvim_set_keymap("n", "fs", "<cmd>TexlabForward<CR>", {})
   end,
 })
-
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = "forester", -- or any filetype
-  callback = function()
-    -- normal mode keymap
-    vim.api.nvim_set_keymap("n", "<leader>fb", "<cmd>Forester browse<CR>", {})
-  end,
-})
