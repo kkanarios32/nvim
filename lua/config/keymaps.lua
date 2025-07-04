@@ -19,3 +19,14 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.api.nvim_set_keymap("n", "fs", "<cmd>TexlabForward<CR>", {})
   end,
 })
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "forester", -- or any filetype
+  callback = function()
+    vim.api.nvim_create_user_command("Tree", function(opts)
+      local template = opts.args
+      local filename = vim.fn.system("new " .. vim.fn.shellescape(template))
+      vim.cmd("edit " .. vim.fn.fnamemodify(filename, ":p"))
+    end, { nargs = 1 })
+  end
+})
