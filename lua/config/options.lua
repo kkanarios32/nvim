@@ -4,6 +4,7 @@ vim.g.maplocalleader = "\\"
 
 local opt = vim.opt
 
+opt.cmdheight = 0
 opt.wrap = true
 opt.autowrite = true -- Enable auto write
 -- only set clipboard if not in ssh, to make sure the OSC 52
