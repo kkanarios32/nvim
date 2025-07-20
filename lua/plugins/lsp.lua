@@ -40,6 +40,9 @@ return {
 						"anki.nvim",
 						dir = "~/.config/nvim/lua/local/anki.nvim/",
 						dev = true,
+						dependencies = {
+							"nvim-telescope/telescope.nvim"
+						},
 						opts = {
 							flashcard_dir = "/home/kellen/Projects/forest/flashcards/",
 							filetypes = { "tex", "anki", "forester" },

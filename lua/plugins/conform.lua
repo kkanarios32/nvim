@@ -20,7 +20,7 @@ return {
 		-- Define your formatters
 		formatters_by_ft = {
 			lua = { "stylua" },
-			python = { "isort", "ruff_format", "ruff_fix" },
+			python = { "ruff_format" },
 			javascript = { "prettierd", "prettier", stop_after_first = true },
 		},
 		-- Set default options
