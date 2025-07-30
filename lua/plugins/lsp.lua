@@ -8,22 +8,6 @@ return {
 		build = 'go build -o ~/.local/bin/'
 	},
 	{
-		"williamboman/mason-lspconfig.nvim",
-		dependencies = {
-			"williamboman/mason.nvim",
-			config = function()
-				require("mason").setup({
-					ensure_installed = { "isort", "basedpyright" },
-				})
-			end,
-		},
-		config = function()
-			require("mason-lspconfig").setup({
-				ensure_installed = { "lua_ls", "ruff" },
-			})
-		end,
-	},
-	{
 		"saghen/blink.cmp",
 		dependencies = {
 			{
@@ -68,8 +52,6 @@ return {
 		-- If you use nix, you can build from source using latest nightly rust with:
 		-- build = 'nix run .#build-plugin',
 
-		---@module 'blink.cmp'
-		---@type blink.cmp.Config
 		opts = {
 			keymap = { preset = "default" },
 			appearance = {

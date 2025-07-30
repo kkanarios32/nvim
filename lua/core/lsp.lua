@@ -110,7 +110,7 @@ vim.lsp.enable({
   "forester",
   "texlab",
   "clangd",
-  -- "basedpyright",
+  "basedpyright",
   "lua_ls",
-  -- "ruff",
+  "ruff",
 })
