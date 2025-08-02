@@ -20,7 +20,7 @@ end
 local function buf_build(client, bufnr)
   local win = vim.api.nvim_get_current_win()
   local params = vim.lsp.util.make_position_params(win, client.offset_encoding)
-  client.request('textDocument/build', params, function(err, result)
+  client:request('textDocument/build', params, function(err, result)
     if err then
       error(tostring(err))
     end
@@ -37,7 +37,7 @@ end
 local function buf_search(client, bufnr)
   local win = vim.api.nvim_get_current_win()
   local params = vim.lsp.util.make_position_params(win, client.offset_encoding)
-  client.request('textDocument/forwardSearch', params, function(err, result)
+  client:request('textDocument/forwardSearch', params, function(err, result)
     if err then
       error(tostring(err))
     end
@@ -63,7 +63,7 @@ local function buf_cancel_build(client, bufnr)
 end
 
 local function dependency_graph(client)
-  client.request('workspace/executeCommand', { command = 'texlab.showDependencyGraph' }, function(err, result)
+  client:request('workspace/executeCommand', { command = 'texlab.showDependencyGraph' }, function(err, result)
     if err then
       return vim.notify(err.code .. ': ' .. err.message, vim.log.levels.ERROR)
     end
@@ -102,7 +102,7 @@ end
 
 local function buf_find_envs(client, bufnr)
   local win = vim.api.nvim_get_current_win()
-  client.request('workspace/executeCommand', {
+  client:request('workspace/executeCommand', {
     command = 'texlab.findEnvironments',
     arguments = { vim.lsp.util.make_position_params(win, client.offset_encoding) },
   }, function(err, result)

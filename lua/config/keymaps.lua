@@ -23,5 +23,16 @@ vim.api.nvim_create_autocmd("FileType", {
       local filename = vim.fn.system("new " .. vim.fn.shellescape(template))
       vim.cmd("edit " .. vim.fn.fnamemodify(filename, ":p"))
     end, { nargs = 1 })
+    vim.keymap.set("n", "<leader>go", function()
+      local bufname = vim.api.nvim_buf_get_name(0)
+      local filename = vim.fn.fnamemodify(bufname, ":t") -- "name.tree"
+      local name = filename:match("^(.*)%.tree$")
+      if name then
+        local url = "http://localhost:1234/" .. name .. "/index.html"
+        vim.fn.jobstart({ "qutebrowser", "--target", "window", url }, { detach = true })
+      else
+        print("Not a .tree file")
+      end
+    end, { desc = "Open .tree file in browser" })
   end
 })
