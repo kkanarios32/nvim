@@ -1,3 +1,6 @@
 [submodule "lua/local/custom-luasnip-snippets.nvim"]
 	path = lua/local/custom-luasnip-snippets.nvim
 	url = git@github.com:kkanarios32/custom-luasnip-snippets.nvim.git
+[submodule "lua/local/anki.nvim"]
+	path = lua/local/anki.nvim
+	url = git@github.com:rareitems/anki.nvim.git
