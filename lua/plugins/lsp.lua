@@ -23,18 +23,13 @@ return {
 					{
 						"anki.nvim",
 						dir = "~/.config/nvim/lua/local/anki.nvim/",
-						dev = true,
-						dependencies = {
-							"nvim-telescope/telescope.nvim"
-						},
-						opts = {
-							flashcard_dir = "/home/kellen/Projects/forest/flashcards/",
-							filetypes = { "tex", "anki", "forester" },
-						},
 					},
-					"lervag/vimtex",
+					{
+						"lervag/vimtex",
+					}
 				},
 				config = function()
+					require("anki").setup()
 					require("custom-luasnip-snippets").setup({
 						use_treesitter = true,
 					})
