@@ -11,7 +11,7 @@ return {
 		local builtins = require("fzf-lua")
 		vim.keymap.set("n", "<leader>ff",
 			function()
-				builtins.files({ cwd = root() })
+				builtins.git_files({ cwd = root() })
 			end
 		)
 		vim.keymap.set("n", "<leader>/",
