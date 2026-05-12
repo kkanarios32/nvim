@@ -29,7 +29,7 @@ vim.api.nvim_create_autocmd("FileType", {
       local name = filename:match("^(.*)%.tree$")
       if name then
         local url = "http://localhost:1234/" .. name .. "/index.html"
-        vim.fn.jobstart({ "qutebrowser", "--target", "window", url }, { detach = true })
+        vim.fn.jobstart({ "firefox", "--new-window", url }, { detach = true })
       else
         print("Not a .tree file")
       end
